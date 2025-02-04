@@ -46,7 +46,7 @@ const products = [
     id: 3,
     barcode: '345678',
     brand: 'Presa Viva',
-    name: 'Calça que vira bermuda',
+    name: 'Calça Desert',
     description: 'P - GG',
     price: 79.99,
     stock: 30,
@@ -138,9 +138,10 @@ export function DataTable() {
   )
 
   return (
-    <div className="w-full flex flex-col gap-4 my-4 sm:my-0">
+    <div className=" flex flex-col gap-4 my-4 sm:my-0">
+      <h1 className="font-bold text-3xl">Tabela de produtos</h1>
       <Input
-        placeholder="Search products..."
+        placeholder="Buscar produto..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         className="max-w-sm"
@@ -150,16 +151,13 @@ export function DataTable() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[50px]">ID</TableHead>
-              <TableHead className="hidden md:table-cell">Barcode</TableHead>
-              <TableHead className="hidden sm:table-cell">Brand</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead className="hidden lg:table-cell">
-                Description
-              </TableHead>
-              <TableHead className="text-right">Price</TableHead>
+              <TableHead className="hidden md:table-cell">Código</TableHead>
+              <TableHead className="hidden sm:table-cell">Marca</TableHead>
+              <TableHead>Nome</TableHead>
+              <TableHead className="hidden lg:table-cell">Descrição</TableHead>
+              <TableHead className="text-right">Preço</TableHead>
               <TableHead className="hidden sm:table-cell text-right">
-                Stock
+                Estoque
               </TableHead>
               <TableHead className="w-[70px]"></TableHead>
             </TableRow>
@@ -167,7 +165,6 @@ export function DataTable() {
           <TableBody>
             {paginatedProducts.map((product) => (
               <TableRow key={product.id}>
-                <TableCell className="font-medium">{product.id}</TableCell>
                 <TableCell className="hidden md:table-cell">
                   {product.barcode}
                 </TableCell>
@@ -193,11 +190,14 @@ export function DataTable() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuItem>Edit</DropdownMenuItem>
-                      <DropdownMenuItem>View details</DropdownMenuItem>
+                      <DropdownMenuLabel>Opções</DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem>Delete</DropdownMenuItem>
+                      <DropdownMenuItem>Editar</DropdownMenuItem>
+                      <DropdownMenuItem>Mais detalhes</DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem className="text-destructive">
+                        Excluir
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
@@ -221,19 +221,22 @@ export function DataTable() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                  <DropdownMenuItem>Edit</DropdownMenuItem>
-                  <DropdownMenuItem>View details</DropdownMenuItem>
+                  <DropdownMenuLabel>Opções</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>Delete</DropdownMenuItem>
+                  <DropdownMenuItem>Editar</DropdownMenuItem>
+                  <DropdownMenuItem>Mais detalhes</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="text-destructive">
+                    Excluir
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
             <p className="text-sm font-bold mb-1">{product.name}</p>
             <p className="text-sm text-gray-600 mb-1">
-              Barcode: {product.barcode}
+              Código: {product.barcode}
             </p>
-            <p className="text-sm text-gray-600 mb-1">Brand: {product.brand}</p>
+            <p className="text-sm text-gray-600 mb-1">Marca: {product.brand}</p>
             <p className="text-sm text-gray-600 mb-2 line-clamp-2">
               {product.description}
             </p>
@@ -258,10 +261,10 @@ export function DataTable() {
           disabled={currentPage === 1}
         >
           <ChevronLeft className="h-4 w-4 mr-2" />
-          Previous
+          Anterior
         </Button>
         <span className="text-sm text-gray-600">
-          Page {currentPage} of {totalPages}
+          Página {currentPage} de {totalPages}
         </span>
         <Button
           variant="outline"
@@ -271,7 +274,7 @@ export function DataTable() {
           }
           disabled={currentPage === totalPages}
         >
-          Next
+          Próxima
           <ChevronRight className="h-4 w-4 ml-2" />
         </Button>
       </div>
