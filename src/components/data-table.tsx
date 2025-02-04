@@ -144,7 +144,7 @@ export function DataTable() {
         placeholder="Buscar produto..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="max-w-sm"
+        className="w-full"
       />
 
       <div className="hidden sm:block rounded-md border">

@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Search, Settings } from 'lucide-react'
+import { Home, CircleFadingPlus } from 'lucide-react'
 
 import {
   Sidebar,
@@ -14,29 +14,14 @@ import {
 // Menu items.
 const items = [
   {
-    title: 'Home',
-    url: '#',
+    title: 'Inicio',
+    url: '/dashboard',
     icon: Home,
   },
   {
-    title: 'Inbox',
-    url: '#',
-    icon: Inbox,
-  },
-  {
-    title: 'Calendar',
-    url: '#',
-    icon: Calendar,
-  },
-  {
-    title: 'Search',
-    url: '#',
-    icon: Search,
-  },
-  {
-    title: 'Settings',
-    url: '#',
-    icon: Settings,
+    title: 'Cadastrar Produto',
+    url: '/dashboard/product-registration',
+    icon: CircleFadingPlus,
   },
 ]
 
@@ -46,7 +31,7 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel className="text-xl my-2">
-            Application
+            Saiko Pesca
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -55,7 +40,7 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild className="py-5">
                     <a href={item.url}>
                       <item.icon />
-                      <span className="text-lg">{item.title}</span>
+                      <span className="font-bold">{item.title}</span>
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
