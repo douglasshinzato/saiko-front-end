@@ -10,6 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
+import { ModeToggle } from './mode-toggle'
 
 // Menu items.
 const items = [
@@ -30,8 +31,9 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-xl my-2">
+          <SidebarGroupLabel className="text-xl my-2 flex justify-between">
             Saiko Pesca
+            <ModeToggle />
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
