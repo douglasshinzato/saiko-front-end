@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -14,6 +15,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 
 export default function ProductRegistrationForm() {
+  const router = useRouter()
   const [formData, setFormData] = useState({
     barcode: '',
     brand: '',
@@ -103,6 +105,7 @@ export default function ProductRegistrationForm() {
             <div className="space-y-2">
               <Label htmlFor="price">Preço</Label>
               <Input
+                className="appearance-none [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden [-moz-appearance:textfield]"
                 id="price"
                 name="price"
                 type="number"
@@ -116,6 +119,7 @@ export default function ProductRegistrationForm() {
             <div className="space-y-2">
               <Label htmlFor="stock">Estoque</Label>
               <Input
+                className="appearance-none [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden [-moz-appearance:textfield]"
                 id="stock"
                 name="stock"
                 type="number"
@@ -127,9 +131,17 @@ export default function ProductRegistrationForm() {
             </div>
           </div>
         </CardContent>
-        <CardFooter>
+        <CardFooter className="flex flex-col gap-2">
           <Button type="submit" className="w-full">
             Cadastrar Produto
+          </Button>
+          <Button
+            variant="secondary"
+            type="button"
+            className="w-full"
+            onClick={() => router.back()}
+          >
+            Voltar
           </Button>
         </CardFooter>
       </form>

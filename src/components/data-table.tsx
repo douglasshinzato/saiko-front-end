@@ -21,6 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import Link from 'next/link'
 
 // Sample data (replace with your actual data or API call)
 const products = [
@@ -29,7 +30,8 @@ const products = [
     barcode: '123456',
     brand: 'Marine',
     name: 'Liger AC',
-    description: 'Carretilha',
+    category: 'Carretilha',
+    description: 'Drag de 7 Kg',
     price: 199.99,
     stock: 50,
   },
@@ -38,7 +40,8 @@ const products = [
     barcode: '234567',
     brand: 'Marine',
     name: 'Venator ACX',
-    description: 'Carretilha',
+    category: 'Carretilha',
+    description: 'Drag de 7 Kg',
     price: 49.99,
     stock: 100,
   },
@@ -47,6 +50,7 @@ const products = [
     barcode: '345678',
     brand: 'Presa Viva',
     name: 'Calça Desert',
+    category: 'Roupas',
     description: 'P - GG',
     price: 79.99,
     stock: 30,
@@ -56,6 +60,7 @@ const products = [
     barcode: '456789',
     brand: 'Daiwa',
     name: 'Zillion TW HD 1000XH',
+    category: 'Carretilha',
     description: 'Carretilha',
     price: 299.99,
     stock: 25,
@@ -65,6 +70,7 @@ const products = [
     barcode: '567890',
     brand: 'Lumis',
     name: 'Infinity 8.0" 50LBS',
+    category: 'Vara de pesca',
     description: 'Vara de pesqueiro',
     price: 39.99,
     stock: 75,
@@ -72,17 +78,19 @@ const products = [
   {
     id: 6,
     barcode: '567890',
-    brand: 'BrandB',
-    name: 'Product E',
-    description: 'Description for Product E',
+    brand: 'Redai',
+    name: 'Black Mamba',
+    category: 'Vara de pesca',
+    description: 'Carbono tubular',
     price: 39.99,
     stock: 75,
   },
   {
     id: 7,
     barcode: '567890',
-    brand: 'BrandB',
-    name: 'Product E',
+    brand: 'Gamakatsu',
+    name: 'Shine SE',
+    category: 'Anzol',
     description: 'Description for Product E',
     price: 39.99,
     stock: 75,
@@ -90,27 +98,30 @@ const products = [
   {
     id: 8,
     barcode: '567890',
-    brand: 'BrandB',
-    name: 'Product E',
-    description: 'Description for Product E',
+    brand: 'Meiho',
+    name: 'VS-7080N',
+    category: 'Bolsa/Caixa',
+    description: 'Maleta',
     price: 39.99,
     stock: 75,
   },
   {
     id: 9,
     barcode: '567890',
-    brand: 'BrandB',
-    name: 'Product E',
-    description: 'Description for Product E',
+    brand: 'Ring Star',
+    name: 'Dream Master',
+    category: 'Estojo',
+    description: 'Estojo para isca soft',
     price: 39.99,
     stock: 75,
   },
   {
     id: 10,
     barcode: '567890',
-    brand: 'BrandB',
-    name: 'Product E',
-    description: 'Description for Product E',
+    brand: 'Megabass',
+    name: 'Magnum X80',
+    category: 'Isca Artificial',
+    description: 'Isca para Tucunaré Azul',
     price: 39.99,
     stock: 75,
   },
@@ -154,6 +165,7 @@ export function DataTable() {
               <TableHead className="hidden md:table-cell">Código</TableHead>
               <TableHead className="hidden sm:table-cell">Marca</TableHead>
               <TableHead>Nome</TableHead>
+              <TableHead>Categoria</TableHead>
               <TableHead className="hidden lg:table-cell">Descrição</TableHead>
               <TableHead className="text-right">Preço</TableHead>
               <TableHead className="hidden sm:table-cell text-right">
@@ -173,6 +185,7 @@ export function DataTable() {
                     {product.brand}
                   </TableCell>
                   <TableCell>{product.name}</TableCell>
+                  <TableCell>{product.category}</TableCell>
                   <TableCell className="hidden lg:table-cell max-w-[200px] truncate">
                     {product.description}
                   </TableCell>
@@ -193,8 +206,14 @@ export function DataTable() {
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Opções</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>Editar</DropdownMenuItem>
-                        <DropdownMenuItem>Detalhes</DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Link href="/dashboard/product-update">Editar</Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Link href="/dashboard/product-details">
+                            Detalhes
+                          </Link>
+                        </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem className="text-destructive">
                           Excluir
@@ -238,8 +257,12 @@ export function DataTable() {
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Opções</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>Editar</DropdownMenuItem>
-                    <DropdownMenuItem>Detalhes</DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link href="/dashboard/product-update">Editar</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link href="/dashboard/product-details">Detalhes</Link>
+                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem className="text-destructive">
                       Excluir
