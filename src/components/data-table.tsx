@@ -1,6 +1,6 @@
 'use client'
 
-import * as React from 'react'
+import React, {useEffect, useState} from 'react'
 import { MoreHorizontal, ChevronLeft, ChevronRight } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
@@ -22,116 +22,138 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import Link from 'next/link'
+import { api } from '@/services/api'
 
-// Sample data (replace with your actual data or API call)
-const products = [
-  {
-    id: 1,
-    barcode: '123456',
-    brand: 'Marine',
-    name: 'Liger AC',
-    category: 'Carretilha',
-    description: 'Drag de 7 Kg',
-    price: 199.99,
-    stock: 50,
-  },
-  {
-    id: 2,
-    barcode: '234567',
-    brand: 'Marine',
-    name: 'Venator ACX',
-    category: 'Carretilha',
-    description: 'Drag de 7 Kg',
-    price: 49.99,
-    stock: 100,
-  },
-  {
-    id: 3,
-    barcode: '345678',
-    brand: 'Presa Viva',
-    name: 'Calça Desert',
-    category: 'Roupas',
-    description: 'P - GG',
-    price: 79.99,
-    stock: 30,
-  },
-  {
-    id: 4,
-    barcode: '456789',
-    brand: 'Daiwa',
-    name: 'Zillion TW HD 1000XH',
-    category: 'Carretilha',
-    description: 'Carretilha',
-    price: 299.99,
-    stock: 25,
-  },
-  {
-    id: 5,
-    barcode: '567890',
-    brand: 'Lumis',
-    name: 'Infinity 8.0" 50LBS',
-    category: 'Vara de pesca',
-    description: 'Vara de pesqueiro',
-    price: 39.99,
-    stock: 75,
-  },
-  {
-    id: 6,
-    barcode: '567890',
-    brand: 'Redai',
-    name: 'Black Mamba',
-    category: 'Vara de pesca',
-    description: 'Carbono tubular',
-    price: 39.99,
-    stock: 75,
-  },
-  {
-    id: 7,
-    barcode: '567890',
-    brand: 'Gamakatsu',
-    name: 'Shine SE',
-    category: 'Anzol',
-    description: 'Description for Product E',
-    price: 39.99,
-    stock: 75,
-  },
-  {
-    id: 8,
-    barcode: '567890',
-    brand: 'Meiho',
-    name: 'VS-7080N',
-    category: 'Bolsa/Caixa',
-    description: 'Maleta',
-    price: 39.99,
-    stock: 75,
-  },
-  {
-    id: 9,
-    barcode: '567890',
-    brand: 'Ring Star',
-    name: 'Dream Master',
-    category: 'Estojo',
-    description: 'Estojo para isca soft',
-    price: 39.99,
-    stock: 75,
-  },
-  {
-    id: 10,
-    barcode: '567890',
-    brand: 'Megabass',
-    name: 'Magnum X80',
-    category: 'Isca Artificial',
-    description: 'Isca para Tucunaré Azul',
-    price: 39.99,
-    stock: 75,
-  },
-  // Add more products as needed
-]
+// Dados de exemplo
+// const products = [
+//   {
+//     id: 1,
+//     barcode: '123456',
+//     brand: 'Marine',
+//     name: 'Liger AC',
+//     category: 'Carretilha',
+//     description: 'Drag de 7 Kg',
+//     price: 199.99,
+//     stock: 50,
+//   },
+//   {
+//     id: 2,
+//     barcode: '234567',
+//     brand: 'Marine',
+//     name: 'Venator ACX',
+//     category: 'Carretilha',
+//     description: 'Drag de 7 Kg',
+//     price: 49.99,
+//     stock: 100,
+//   },
+//   {
+//     id: 3,
+//     barcode: '345678',
+//     brand: 'Presa Viva',
+//     name: 'Calça Desert',
+//     category: 'Roupas',
+//     description: 'P - GG',
+//     price: 79.99,
+//     stock: 30,
+//   },
+//   {
+//     id: 4,
+//     barcode: '456789',
+//     brand: 'Daiwa',
+//     name: 'Zillion TW HD 1000XH',
+//     category: 'Carretilha',
+//     description: 'Carretilha',
+//     price: 299.99,
+//     stock: 25,
+//   },
+//   {
+//     id: 5,
+//     barcode: '567890',
+//     brand: 'Lumis',
+//     name: 'Infinity 8.0" 50LBS',
+//     category: 'Vara de pesca',
+//     description: 'Vara de pesqueiro',
+//     price: 39.99,
+//     stock: 75,
+//   },
+//   {
+//     id: 6,
+//     barcode: '567890',
+//     brand: 'Redai',
+//     name: 'Black Mamba',
+//     category: 'Vara de pesca',
+//     description: 'Carbono tubular',
+//     price: 39.99,
+//     stock: 75,
+//   },
+//   {
+//     id: 7,
+//     barcode: '567890',
+//     brand: 'Gamakatsu',
+//     name: 'Shine SE',
+//     category: 'Anzol',
+//     description: 'Description for Product E',
+//     price: 39.99,
+//     stock: 75,
+//   },
+//   {
+//     id: 8,
+//     barcode: '567890',
+//     brand: 'Meiho',
+//     name: 'VS-7080N',
+//     category: 'Bolsa/Caixa',
+//     description: 'Maleta',
+//     price: 39.99,
+//     stock: 75,
+//   },
+//   {
+//     id: 9,
+//     barcode: '567890',
+//     brand: 'Ring Star',
+//     name: 'Dream Master',
+//     category: 'Estojo',
+//     description: 'Estojo para isca soft',
+//     price: 39.99,
+//     stock: 75,
+//   },
+//   {
+//     id: 10,
+//     barcode: '567890',
+//     brand: 'Megabass',
+//     name: 'Magnum X80',
+//     category: 'Isca Artificial',
+//     description: 'Isca para Tucunaré Azul',
+//     price: 39.99,
+//     stock: 75,
+//   },
+//   // Add more products as needed
+// ]
+
+interface Product {
+  id: string;
+  barcode: string;
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+  brand: string;
+  category: string;
+}
 
 export function DataTable() {
-  const [searchTerm, setSearchTerm] = React.useState('')
-  const [currentPage, setCurrentPage] = React.useState(1)
+  const [products, setProducts] = useState<Product[]>([])
+  const [searchTerm, setSearchTerm] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 5
+
+  //Busca os produtos da API ao carregar a tabela
+  useEffect(() => {
+     async function fetchProducts() {
+      const response = await api.get('/products')
+      setProducts(response.data)
+    }
+    fetchProducts()
+  }, [])
 
   const filteredProducts = products.filter((product) =>
     Object.values(product).some(
@@ -168,9 +190,9 @@ export function DataTable() {
               <TableHead>Categoria</TableHead>
               <TableHead className="hidden lg:table-cell">Descrição</TableHead>
               <TableHead className="text-right">Preço</TableHead>
-              <TableHead className="hidden sm:table-cell text-right">
+              {/* <TableHead className="hidden sm:table-cell text-right">
                 Estoque
-              </TableHead>
+              </TableHead> */}
               <TableHead className="w-[70px]"></TableHead>
             </TableRow>
           </TableHeader>
@@ -190,11 +212,11 @@ export function DataTable() {
                     {product.description}
                   </TableCell>
                   <TableCell className="text-right">
-                    R$ {product.price.toFixed(2)}
+                    R$ {product.price}
                   </TableCell>
-                  <TableCell className="hidden sm:table-cell text-right">
+                  {/* <TableCell className="hidden sm:table-cell text-right">
                     {product.stock}
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -282,7 +304,7 @@ export function DataTable() {
               </p>
               <div className="flex justify-between items-center mt-2">
                 <span className="text-sm font-medium">
-                  R$ {product.price.toFixed(2)}
+                  R$ {product.price}
                 </span>
                 <span className="text-sm text-gray-600">
                   Estoque: {product.stock}
