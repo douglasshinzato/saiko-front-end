@@ -13,6 +13,8 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { api } from '@/services/api'
+import { CategorySelect } from '@/components/category-select'
 
 export default function ProductRegistrationForm() {
   const router = useRouter()
@@ -20,6 +22,7 @@ export default function ProductRegistrationForm() {
     barcode: '',
     brand: '',
     name: '',
+    category: '',
     description: '',
     price: '',
     stock: '',
@@ -35,19 +38,53 @@ export default function ProductRegistrationForm() {
     }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleCategoryChange = (value: string) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      category: value,
+    }))
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Here you would typically send the data to your backend
-    console.log('Form submitted:', formData)
-    // Reset form after submission
-    setFormData({
-      barcode: '',
-      brand: '',
-      name: '',
-      description: '',
-      price: '',
-      stock: '',
-    })
+
+    const payload = {
+      barcode: formData.barcode,
+      brand: formData.brand,
+      name: formData.name,
+      category: formData.category,
+      description: formData.description || null, // Se vazio, enviar como `null`
+      price: Number(formData.price), // Converter para número
+      stock: formData.stock ? Number(formData.stock) : null, // Converter para número ou enviar `null`
+    }
+
+    console.log('Enviando:', payload) // Verificar no console
+
+    try {
+      await api.post('/products', payload)
+      alert('Produto cadastrado com sucesso!')
+
+      // Resetar o formulário
+      setFormData({
+        barcode: '',
+        brand: '',
+        name: '',
+        category: '',
+        description: '',
+        price: '',
+        stock: '',
+      })
+
+      router.push('/dashboard') // Redirecionar
+    } catch (error: any) {
+      console.error(
+        'Erro na requisição:',
+        error.response?.data || error.message
+      )
+      alert(
+        'Erro ao cadastrar o produto. Verifique os dados e tente novamente.'
+      )
+    }
   }
 
   return (
@@ -91,6 +128,10 @@ export default function ProductRegistrationForm() {
               required
             />
           </div>
+          <CategorySelect
+            value={formData.category}
+            onChange={handleCategoryChange}
+          />
           <div className="space-y-2">
             <Label htmlFor="description">Descrição</Label>
             <Textarea
@@ -132,7 +173,7 @@ export default function ProductRegistrationForm() {
           </div>
         </CardContent>
         <CardFooter className="flex flex-col gap-2">
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full" onClick={handleSubmit}>
             Cadastrar Produto
           </Button>
           <Button
