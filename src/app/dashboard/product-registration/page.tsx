@@ -53,12 +53,10 @@ export default function ProductRegistrationForm() {
       brand: formData.brand,
       name: formData.name,
       category: formData.category,
-      description: formData.description || null, // Se vazio, enviar como `null`
-      price: Number(formData.price), // Converter para número
-      stock: formData.stock ? Number(formData.stock) : null, // Converter para número ou enviar `null`
+      description: formData.description ? formData.description : '', // Garante que seja string
+      price: Number(formData.price), // Garante que seja número
+      stock: formData.stock ? Number(formData.stock) : null, // Mantém `null` se não preenchido
     }
-
-    console.log('Enviando:', payload) // Verificar no console
 
     try {
       await api.post('/products', payload)
@@ -77,12 +75,11 @@ export default function ProductRegistrationForm() {
 
       router.push('/dashboard') // Redirecionar
     } catch (error: any) {
-      console.error(
-        'Erro na requisição:',
-        error.response?.data || error.message
-      )
+      console.error('Erro na requisição:', error)
       alert(
-        'Erro ao cadastrar o produto. Verifique os dados e tente novamente.'
+        `Erro ao cadastrar o produto: ${JSON.stringify(
+          error.response?.data || error.message
+        )}`
       )
     }
   }
