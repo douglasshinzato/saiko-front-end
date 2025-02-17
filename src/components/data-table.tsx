@@ -1,6 +1,6 @@
 'use client'
 
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import { MoreHorizontal, ChevronLeft, ChevronRight } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
@@ -24,120 +24,14 @@ import {
 import Link from 'next/link'
 import { api } from '@/services/api'
 
-// Dados de exemplo
-// const products = [
-//   {
-//     id: 1,
-//     barcode: '123456',
-//     brand: 'Marine',
-//     name: 'Liger AC',
-//     category: 'Carretilha',
-//     description: 'Drag de 7 Kg',
-//     price: 199.99,
-//     stock: 50,
-//   },
-//   {
-//     id: 2,
-//     barcode: '234567',
-//     brand: 'Marine',
-//     name: 'Venator ACX',
-//     category: 'Carretilha',
-//     description: 'Drag de 7 Kg',
-//     price: 49.99,
-//     stock: 100,
-//   },
-//   {
-//     id: 3,
-//     barcode: '345678',
-//     brand: 'Presa Viva',
-//     name: 'Calça Desert',
-//     category: 'Roupas',
-//     description: 'P - GG',
-//     price: 79.99,
-//     stock: 30,
-//   },
-//   {
-//     id: 4,
-//     barcode: '456789',
-//     brand: 'Daiwa',
-//     name: 'Zillion TW HD 1000XH',
-//     category: 'Carretilha',
-//     description: 'Carretilha',
-//     price: 299.99,
-//     stock: 25,
-//   },
-//   {
-//     id: 5,
-//     barcode: '567890',
-//     brand: 'Lumis',
-//     name: 'Infinity 8.0" 50LBS',
-//     category: 'Vara de pesca',
-//     description: 'Vara de pesqueiro',
-//     price: 39.99,
-//     stock: 75,
-//   },
-//   {
-//     id: 6,
-//     barcode: '567890',
-//     brand: 'Redai',
-//     name: 'Black Mamba',
-//     category: 'Vara de pesca',
-//     description: 'Carbono tubular',
-//     price: 39.99,
-//     stock: 75,
-//   },
-//   {
-//     id: 7,
-//     barcode: '567890',
-//     brand: 'Gamakatsu',
-//     name: 'Shine SE',
-//     category: 'Anzol',
-//     description: 'Description for Product E',
-//     price: 39.99,
-//     stock: 75,
-//   },
-//   {
-//     id: 8,
-//     barcode: '567890',
-//     brand: 'Meiho',
-//     name: 'VS-7080N',
-//     category: 'Bolsa/Caixa',
-//     description: 'Maleta',
-//     price: 39.99,
-//     stock: 75,
-//   },
-//   {
-//     id: 9,
-//     barcode: '567890',
-//     brand: 'Ring Star',
-//     name: 'Dream Master',
-//     category: 'Estojo',
-//     description: 'Estojo para isca soft',
-//     price: 39.99,
-//     stock: 75,
-//   },
-//   {
-//     id: 10,
-//     barcode: '567890',
-//     brand: 'Megabass',
-//     name: 'Magnum X80',
-//     category: 'Isca Artificial',
-//     description: 'Isca para Tucunaré Azul',
-//     price: 39.99,
-//     stock: 75,
-//   },
-//   // Add more products as needed
-// ]
-
 interface Product {
-  id: string;
-  barcode: string;
-  name: string;
-  description: string;
-  price: number;
-  stock: number;
-  brand: string;
-  category: string;
+  id: string
+  barcode: string
+  name: string
+  description: string
+  price: number
+  brand: string
+  category: string
 }
 
 export function DataTable() {
@@ -148,9 +42,13 @@ export function DataTable() {
 
   //Busca os produtos da API ao carregar a tabela
   useEffect(() => {
-     async function fetchProducts() {
-      const response = await api.get('/products')
-      setProducts(response.data)
+    async function fetchProducts() {
+      try {
+        const response = await api.get('/products')
+        setProducts(response.data) // Sempre recebe um array, podendo ser vazio
+      } catch (error: unknown) {
+        console.error('Erro ao buscar produtos:', error)
+      }
     }
     fetchProducts()
   }, [])
@@ -214,9 +112,7 @@ export function DataTable() {
                   <TableCell className="text-right">
                     R$ {product.price}
                   </TableCell>
-                  {/* <TableCell className="hidden sm:table-cell text-right">
-                    {product.stock}
-                  </TableCell> */}
+
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -303,12 +199,7 @@ export function DataTable() {
                 {product.description}
               </p>
               <div className="flex justify-between items-center mt-2">
-                <span className="text-sm font-medium">
-                  R$ {product.price}
-                </span>
-                <span className="text-sm text-gray-600">
-                  Estoque: {product.stock}
-                </span>
+                <span className="text-sm font-medium">R$ {product.price}</span>
               </div>
             </div>
           ))

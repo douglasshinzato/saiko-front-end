@@ -22,7 +22,6 @@ export default function ProductUpdate() {
     name: '',
     description: '',
     price: '',
-    stock: '',
   })
 
   const handleChange = (
@@ -46,7 +45,6 @@ export default function ProductUpdate() {
       name: '',
       description: '',
       price: '',
-      stock: '',
     })
   }
 
@@ -101,34 +99,19 @@ export default function ProductUpdate() {
               required
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="price">Preço</Label>
-              <Input
-                className="appearance-none [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden [-moz-appearance:textfield]"
-                id="price"
-                name="price"
-                type="number"
-                min="0"
-                step="0.01"
-                value={formData.price}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="stock">Estoque</Label>
-              <Input
-                className="appearance-none [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden [-moz-appearance:textfield]"
-                id="stock"
-                name="stock"
-                type="number"
-                min="0"
-                value={formData.stock}
-                onChange={handleChange}
-                required
-              />
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="price">Preço</Label>
+            <Input
+              className="appearance-none [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden [-moz-appearance:textfield]"
+              id="price"
+              name="price"
+              type="number"
+              min="0"
+              step="0.01"
+              value={formData.price}
+              onChange={handleChange}
+              required
+            />
           </div>
         </CardContent>
         <CardFooter className="flex flex-col gap-2">

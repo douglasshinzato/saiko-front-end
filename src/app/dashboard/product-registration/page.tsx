@@ -1,7 +1,11 @@
 'use client'
 
+import type React from 'react'
+
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { productSchema } from '@/utils/productSchema'
+import { api } from '@/services/api'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -13,8 +17,8 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { api } from '@/services/api'
 import { CategorySelect } from '@/components/category-select'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 
 export default function ProductRegistrationForm() {
   const router = useRouter()
@@ -25,44 +29,51 @@ export default function ProductRegistrationForm() {
     category: '',
     description: '',
     price: '',
-    stock: '',
   })
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [categoryError, setCategoryError] = useState(false)
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }))
+    setFormData((prevData) => ({ ...prevData, [name]: value }))
   }
 
   const handleCategoryChange = (value: string) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      category: value,
-    }))
+    setFormData((prevData) => ({ ...prevData, category: value }))
+    setCategoryError(false)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
+    if (!formData.category) {
+      setCategoryError(true)
+      return
+    }
+
+    // 🔹 Validar os dados com Zod antes de enviar
+    const parsed = productSchema.safeParse(formData)
+
+    if (!parsed.success) {
+      const fieldErrors: Record<string, string> = {}
+      parsed.error.errors.forEach((err) => {
+        fieldErrors[err.path[0]] = err.message
+      })
+      setErrors(fieldErrors)
+      return
+    }
+
+    // Se passou na validação, transforma os dados corretamente
     const payload = {
-      barcode: formData.barcode,
-      brand: formData.brand,
-      name: formData.name,
-      category: formData.category,
-      description: formData.description ? formData.description : '', // Garante que seja string
-      price: Number(formData.price), // Garante que seja número
-      stock: formData.stock ? Number(formData.stock) : null, // Mantém `null` se não preenchido
+      ...parsed.data,
+      price: Number(parsed.data.price), // Converte para número
     }
 
     try {
       await api.post('/products', payload)
       alert('Produto cadastrado com sucesso!')
-
-      // Resetar o formulário
       setFormData({
         barcode: '',
         brand: '',
@@ -70,17 +81,14 @@ export default function ProductRegistrationForm() {
         category: '',
         description: '',
         price: '',
-        stock: '',
       })
-
-      router.push('/dashboard') // Redirecionar
+      router.push('/dashboard')
     } catch (error: any) {
-      console.error('Erro na requisição:', error)
-      alert(
-        `Erro ao cadastrar o produto: ${JSON.stringify(
-          error.response?.data || error.message
-        )}`
+      console.error(
+        'Erro na requisição:',
+        error.response?.data || error.message
       )
+      alert('Erro ao cadastrar o produto.')
     }
   }
 
@@ -103,6 +111,9 @@ export default function ProductRegistrationForm() {
                 onChange={handleChange}
                 required
               />
+              {errors.barcode && (
+                <p className="text-red-500 text-sm">{errors.barcode}</p>
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="brand">Marca</Label>
@@ -113,6 +124,9 @@ export default function ProductRegistrationForm() {
                 onChange={handleChange}
                 required
               />
+              {errors.brand && (
+                <p className="text-red-500 text-sm">{errors.brand}</p>
+              )}
             </div>
           </div>
           <div className="space-y-2">
@@ -124,11 +138,21 @@ export default function ProductRegistrationForm() {
               onChange={handleChange}
               required
             />
+            {errors.name && (
+              <p className="text-red-500 text-sm">{errors.name}</p>
+            )}
           </div>
           <CategorySelect
             value={formData.category}
             onChange={handleCategoryChange}
           />
+          {categoryError && (
+            <Alert variant="destructive">
+              <AlertDescription>
+                Por favor, selecione uma categoria.
+              </AlertDescription>
+            </Alert>
+          )}
           <div className="space-y-2">
             <Label htmlFor="description">Descrição</Label>
             <Textarea
@@ -136,41 +160,29 @@ export default function ProductRegistrationForm() {
               name="description"
               value={formData.description}
               onChange={handleChange}
+            />
+            {errors.description && (
+              <p className="text-red-500 text-sm">{errors.description}</p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="price">Preço</Label>
+            <Input
+              className="appearance-none [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden [-moz-appearance:textfield]"
+              id="price"
+              name="price"
+              type="number"
+              value={formData.price}
+              onChange={handleChange}
               required
             />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="price">Preço</Label>
-              <Input
-                className="appearance-none [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden [-moz-appearance:textfield]"
-                id="price"
-                name="price"
-                type="number"
-                min="0"
-                step="0.01"
-                value={formData.price}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="stock">Estoque</Label>
-              <Input
-                className="appearance-none [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden [-moz-appearance:textfield]"
-                id="stock"
-                name="stock"
-                type="number"
-                min="0"
-                value={formData.stock}
-                onChange={handleChange}
-                required
-              />
-            </div>
+            {errors.price && (
+              <p className="text-red-500 text-sm">{errors.price}</p>
+            )}
           </div>
         </CardContent>
         <CardFooter className="flex flex-col gap-2">
-          <Button type="submit" className="w-full" onClick={handleSubmit}>
+          <Button type="submit" className="w-full">
             Cadastrar Produto
           </Button>
           <Button
