@@ -23,7 +23,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 export default function ProductRegistrationForm() {
   const router = useRouter()
   const [formData, setFormData] = useState({
-    barcode: '',
+    // barcode: '',
     brand: '',
     name: '',
     category: '',
@@ -75,20 +75,22 @@ export default function ProductRegistrationForm() {
       await api.post('/products', payload)
       alert('Produto cadastrado com sucesso!')
       setFormData({
-        barcode: '',
+        // barcode: '',
         brand: '',
         name: '',
         category: '',
         description: '',
         price: '',
       })
-      router.push('/dashboard')
+      // router.push('/dashboard')
     } catch (error: any) {
-      console.error(
-        'Erro na requisição:',
-        error.response?.data || error.message
-      )
-      alert('Erro ao cadastrar o produto.')
+      if (error.response) {
+        alert(error.response.data.error || 'Erro inesperado')
+      } else if (error.message) {
+        alert(error.message)
+      } else {
+        alert('Ocorreu um erro desconhecido.')
+      }
     }
   }
 
@@ -101,8 +103,9 @@ export default function ProductRegistrationForm() {
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
+          <div>
+            {/* className="grid grid-cols-2 gap-4" */}
+            {/* <div className="space-y-2">
               <Label htmlFor="barcode">Código</Label>
               <Input
                 id="barcode"
@@ -114,7 +117,7 @@ export default function ProductRegistrationForm() {
               {errors.barcode && (
                 <p className="text-red-500 text-sm">{errors.barcode}</p>
               )}
-            </div>
+            </div> */}
             <div className="space-y-2">
               <Label htmlFor="brand">Marca</Label>
               <Input
@@ -122,7 +125,7 @@ export default function ProductRegistrationForm() {
                 name="brand"
                 value={formData.brand}
                 onChange={handleChange}
-                required
+                // required
               />
               {errors.brand && (
                 <p className="text-red-500 text-sm">{errors.brand}</p>
@@ -136,7 +139,7 @@ export default function ProductRegistrationForm() {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              required
+              // required
             />
             {errors.name && (
               <p className="text-red-500 text-sm">{errors.name}</p>
@@ -174,7 +177,7 @@ export default function ProductRegistrationForm() {
               type="number"
               value={formData.price}
               onChange={handleChange}
-              required
+              // required
             />
             {errors.price && (
               <p className="text-red-500 text-sm">{errors.price}</p>

@@ -82,7 +82,7 @@ export function DataTable() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="hidden md:table-cell">Código</TableHead>
+              {/* <TableHead className="hidden md:table-cell">Código</TableHead> */}
               <TableHead className="hidden sm:table-cell">Marca</TableHead>
               <TableHead>Nome</TableHead>
               <TableHead>Categoria</TableHead>
@@ -91,16 +91,16 @@ export function DataTable() {
               {/* <TableHead className="hidden sm:table-cell text-right">
                 Estoque
               </TableHead> */}
-              <TableHead className="w-[70px]"></TableHead>
+              {/* <TableHead className="w-[70px]"></TableHead> */}
             </TableRow>
           </TableHeader>
           <TableBody>
             {paginatedProducts.length > 0 ? (
               paginatedProducts.map((product) => (
                 <TableRow key={product.id}>
-                  <TableCell className="hidden md:table-cell">
+                  {/* <TableCell className="hidden md:table-cell">
                     {product.barcode}
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell className="hidden sm:table-cell">
                     {product.brand}
                   </TableCell>
@@ -113,7 +113,7 @@ export function DataTable() {
                     R$ {product.price}
                   </TableCell>
 
-                  <TableCell>
+                  {/* <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0">
@@ -138,7 +138,7 @@ export function DataTable() {
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
-                  </TableCell>
+                  </TableCell> */}
                 </TableRow>
               ))
             ) : (
@@ -165,7 +165,7 @@ export function DataTable() {
             <div key={product.id} className="rounded-lg border p-4">
               <div className="flex justify-between items-center mb-2">
                 <span className="font-medium">{product.brand}</span>
-                <DropdownMenu>
+                {/* <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" className="h-8 w-8 p-0">
                       <span className="sr-only">Open menu</span>
@@ -186,15 +186,15 @@ export function DataTable() {
                       Excluir
                     </DropdownMenuItem>
                   </DropdownMenuContent>
-                </DropdownMenu>
+                </DropdownMenu> */}
               </div>
               <p className="text-sm font-bold mb-1">{product.name}</p>
-              <p className="text-sm text-gray-600 mb-1">
+              {/* <p className="text-sm text-gray-600 mb-1">
                 Código: {product.barcode}
-              </p>
-              <p className="text-sm text-gray-600 mb-1">
+              </p> */}
+              {/* <p className="text-sm text-gray-600 mb-1">
                 Marca: {product.brand}
-              </p>
+              </p> */}
               <p className="text-sm text-gray-600 mb-2 line-clamp-2">
                 {product.description}
               </p>

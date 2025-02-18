@@ -8,6 +8,7 @@ import {
 import { Label } from '@/components/ui/label'
 
 const categories = [
+  'Acessório',
   'Anzol',
   'Boné',
   'Bóia',
@@ -19,6 +20,7 @@ const categories = [
   'Carretilha',
   'Chapéu',
   'Luva',
+  'Molinete',
   'Suporte',
   'Vara de pesca',
 ]
