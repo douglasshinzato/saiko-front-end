@@ -1,17 +1,9 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { MoreHorizontal, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, ArrowUpDown } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import {
   Table,
@@ -21,7 +13,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import Link from 'next/link'
 import { api } from '@/services/api'
 
 interface Product {
@@ -38,6 +29,10 @@ export function DataTable() {
   const [products, setProducts] = useState<Product[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
+  const [sortConfig, setSortConfig] = useState<{
+    key: keyof Product
+    direction: 'ascending' | 'descending'
+  } | null>(null)
   const itemsPerPage = 5
 
   //Busca os produtos da API ao carregar a tabela
@@ -63,10 +58,38 @@ export function DataTable() {
 
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
-  const paginatedProducts = filteredProducts.slice(
+  const sortedProducts = React.useMemo(() => {
+    const sortableProducts = [...filteredProducts]
+    if (sortConfig !== null) {
+      sortableProducts.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? -1 : 1
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? 1 : -1
+        }
+        return 0
+      })
+    }
+    return sortableProducts
+  }, [filteredProducts, sortConfig])
+
+  const paginatedProducts = sortedProducts.slice(
     startIndex,
     startIndex + itemsPerPage
   )
+
+  const requestSort = (key: keyof Product) => {
+    let direction: 'ascending' | 'descending' = 'ascending'
+    if (
+      sortConfig &&
+      sortConfig.key === key &&
+      sortConfig.direction === 'ascending'
+    ) {
+      direction = 'descending'
+    }
+    setSortConfig({ key, direction })
+  }
 
   return (
     <div className=" flex flex-col gap-4 my-4 sm:my-0">
@@ -84,7 +107,16 @@ export function DataTable() {
             <TableRow>
               {/* <TableHead className="hidden md:table-cell">Código</TableHead> */}
               <TableHead className="hidden sm:table-cell">Marca</TableHead>
-              <TableHead>Nome</TableHead>
+              <TableHead>
+                <Button
+                  variant="ghost"
+                  onClick={() => requestSort('name')}
+                  className="w-full justify-start font-medium text-left flex items-center"
+                >
+                  Nome
+                  <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+              </TableHead>
               <TableHead>Categoria</TableHead>
               <TableHead className="hidden lg:table-cell">Descrição</TableHead>
               <TableHead className="text-right">Preço</TableHead>
@@ -95,8 +127,8 @@ export function DataTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedProducts.length > 0 ? (
-              paginatedProducts.map((product) => (
+            {sortedProducts.length > 0 ? (
+              sortedProducts.map((product) => (
                 <TableRow key={product.id}>
                   {/* <TableCell className="hidden md:table-cell">
                     {product.barcode}
@@ -160,8 +192,8 @@ export function DataTable() {
 
       {/* Mobile card view */}
       <div className="flex flex-col gap-2 sm:hidden">
-        {paginatedProducts.length > 0 ? (
-          paginatedProducts.map((product) => (
+        {sortedProducts.length > 0 ? (
+          sortedProducts.map((product) => (
             <div key={product.id} className="rounded-lg border p-4">
               <div className="flex justify-between items-center mb-2">
                 <span className="font-medium">{product.brand}</span>
