@@ -35,12 +35,11 @@ export function DataTable() {
   } | null>(null)
   const itemsPerPage = 5
 
-  //Busca os produtos da API ao carregar a tabela
   useEffect(() => {
     async function fetchProducts() {
       try {
         const response = await api.get('/products')
-        setProducts(response.data) // Sempre recebe um array, podendo ser vazio
+        setProducts(response.data)
       } catch (error: unknown) {
         console.error('Erro ao buscar produtos:', error)
       }
@@ -56,8 +55,6 @@ export function DataTable() {
     )
   )
 
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage)
-  const startIndex = (currentPage - 1) * itemsPerPage
   const sortedProducts = React.useMemo(() => {
     const sortableProducts = [...filteredProducts]
     if (sortConfig !== null) {
@@ -74,6 +71,8 @@ export function DataTable() {
     return sortableProducts
   }, [filteredProducts, sortConfig])
 
+  const totalPages = Math.ceil(sortedProducts.length / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
   const paginatedProducts = sortedProducts.slice(
     startIndex,
     startIndex + itemsPerPage
@@ -89,15 +88,19 @@ export function DataTable() {
       direction = 'descending'
     }
     setSortConfig({ key, direction })
+    setCurrentPage(1) // Reset to first page when sorting
   }
 
   return (
-    <div className=" flex flex-col gap-4 my-4 sm:my-0">
+    <div className="flex flex-col gap-4 my-4 sm:my-0">
       <h1 className="font-bold text-3xl">Tabela de produtos</h1>
       <Input
         placeholder="Buscar produto..."
         value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+        onChange={(e) => {
+          setSearchTerm(e.target.value)
+          setCurrentPage(1) // Reset to first page when searching
+        }}
         className="w-full"
       />
 
@@ -105,7 +108,6 @@ export function DataTable() {
         <Table>
           <TableHeader>
             <TableRow>
-              {/* <TableHead className="hidden md:table-cell">Código</TableHead> */}
               <TableHead className="hidden sm:table-cell">Marca</TableHead>
               <TableHead>
                 <Button
@@ -120,19 +122,12 @@ export function DataTable() {
               <TableHead>Categoria</TableHead>
               <TableHead className="hidden lg:table-cell">Descrição</TableHead>
               <TableHead className="text-right">Preço</TableHead>
-              {/* <TableHead className="hidden sm:table-cell text-right">
-                Estoque
-              </TableHead> */}
-              {/* <TableHead className="w-[70px]"></TableHead> */}
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sortedProducts.length > 0 ? (
-              sortedProducts.map((product) => (
+            {paginatedProducts.length > 0 ? (
+              paginatedProducts.map((product) => (
                 <TableRow key={product.id}>
-                  {/* <TableCell className="hidden md:table-cell">
-                    {product.barcode}
-                  </TableCell> */}
                   <TableCell className="hidden sm:table-cell">
                     {product.brand}
                   </TableCell>
@@ -144,38 +139,11 @@ export function DataTable() {
                   <TableCell className="text-right">
                     R$ {product.price}
                   </TableCell>
-
-                  {/* <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <span className="sr-only">Open menu</span>
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Opções</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                          <Link href="/dashboard/product-update">Editar</Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Link href="/dashboard/product-details">
-                            Detalhes
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-destructive">
-                          Excluir
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell> */}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={7} className="h-24 text-center">
+                <TableCell colSpan={5} className="h-24 text-center">
                   <p className="text-lg font-medium text-gray-600">
                     Produto não encontrado
                   </p>
@@ -192,41 +160,13 @@ export function DataTable() {
 
       {/* Mobile card view */}
       <div className="flex flex-col gap-2 sm:hidden">
-        {sortedProducts.length > 0 ? (
-          sortedProducts.map((product) => (
+        {paginatedProducts.length > 0 ? (
+          paginatedProducts.map((product) => (
             <div key={product.id} className="rounded-lg border p-4">
               <div className="flex justify-between items-center mb-2">
                 <span className="font-medium">{product.brand}</span>
-                {/* <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="h-8 w-8 p-0">
-                      <span className="sr-only">Open menu</span>
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Opções</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                      <Link href="/dashboard/product-update">Editar</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Link href="/dashboard/product-details">Detalhes</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-destructive">
-                      Excluir
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu> */}
               </div>
               <p className="text-sm font-bold mb-1">{product.name}</p>
-              {/* <p className="text-sm text-gray-600 mb-1">
-                Código: {product.barcode}
-              </p> */}
-              {/* <p className="text-sm text-gray-600 mb-1">
-                Marca: {product.brand}
-              </p> */}
               <p className="text-sm text-gray-600 mb-2 line-clamp-2">
                 {product.description}
               </p>
@@ -249,7 +189,7 @@ export function DataTable() {
       </div>
 
       {/* Pagination */}
-      {filteredProducts.length > 0 && (
+      {sortedProducts.length > 0 && (
         <div className="flex items-center justify-between">
           <Button
             variant="outline"
