@@ -8,19 +8,21 @@ import {
 import { Label } from '@/components/ui/label'
 
 const categories = [
-  'Acessório',
+  'Acessórios',
   'Anzol',
   'Boné',
   'Bóia',
-  'Buff',
   'Calça',
   'Calçado',
   'Camisa',
   'Camiseta',
   'Carretilha',
   'Chapéu',
+  'Garateia',
+  'Isca artificial',
   'Luva',
   'Molinete',
+  'Outros',
   'Suporte',
   'Vara de pesca',
 ]
@@ -38,7 +40,7 @@ export function CategorySelect({ value, onChange }: CategorySelectProps) {
         <SelectTrigger id="category">
           <SelectValue placeholder="Selecione uma categoria" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="max-h-[200px]">
           {categories.map((category) => (
             <SelectItem key={category} value={category}>
               {category}
