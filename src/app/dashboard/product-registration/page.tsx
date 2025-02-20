@@ -30,7 +30,8 @@ export default function ProductRegistrationForm() {
     description: '',
     price: '',
   })
-  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [errors, setErrors] = useState<{ [key: string]: string }>({})
+
   const [categoryError, setCategoryError] = useState(false)
 
   const handleChange = (
@@ -68,24 +69,37 @@ export default function ProductRegistrationForm() {
     // Se passou na validação, transforma os dados corretamente
     const payload = {
       ...parsed.data,
-      price: Number(parsed.data.price), // Converte para número
     }
 
     try {
       await api.post('/products', payload)
       alert('Produto cadastrado com sucesso!')
+
       setFormData({
-        // barcode: '',
         brand: '',
         name: '',
         category: '',
         description: '',
         price: '',
       })
-      // router.push('/dashboard')
+      setErrors({}) // Limpa os erros ao cadastrar com sucesso
     } catch (error: any) {
       if (error.response) {
-        alert(error.response.data.error || 'Erro inesperado')
+        const responseData = error.response.data
+
+        // Se houver múltiplos erros de validação
+        if (responseData.details && Array.isArray(responseData.details)) {
+          const formattedErrors: { [key: string]: string } = {}
+
+          responseData.details.forEach((err: any) => {
+            formattedErrors[err.field] = err.message
+          })
+
+          setErrors(formattedErrors) // Atualiza o estado de erros
+          return
+        }
+
+        alert(responseData.error || 'Erro inesperado')
       } else if (error.message) {
         alert(error.message)
       } else {
@@ -174,7 +188,7 @@ export default function ProductRegistrationForm() {
               className="appearance-none [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden [-moz-appearance:textfield]"
               id="price"
               name="price"
-              type="number"
+              type="text"
               value={formData.price}
               onChange={handleChange}
               // required

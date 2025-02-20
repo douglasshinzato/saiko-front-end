@@ -137,7 +137,10 @@ export function DataTable() {
                     {product.description}
                   </TableCell>
                   <TableCell className="text-right">
-                    R$ {product.price}
+                    {new Intl.NumberFormat('pt-BR', {
+                      style: 'currency',
+                      currency: 'BRL',
+                    }).format(Number(product.price))}
                   </TableCell>
                 </TableRow>
               ))
@@ -171,7 +174,12 @@ export function DataTable() {
                 {product.description}
               </p>
               <div className="flex justify-between items-center mt-2">
-                <span className="text-sm font-medium">R$ {product.price}</span>
+                <span className="text-sm font-medium">
+                  {new Intl.NumberFormat('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL',
+                  }).format(Number(product.price))}
+                </span>
               </div>
             </div>
           ))
