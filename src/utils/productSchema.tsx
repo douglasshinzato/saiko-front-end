@@ -6,5 +6,5 @@ export const productSchema = z.object({
   name: z.string(),
   category: z.string(),
   description: z.string().optional(),
-  price: z.string(),
+  price: z.string().nonempty('O preço é obrigatório'),
 })

@@ -1,36 +1,40 @@
+import { Label } from '@/components/ui/label'
 import {
   Select,
-  SelectContent,
-  SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectContent,
+  SelectItem,
 } from '@/components/ui/select'
-import { Label } from '@/components/ui/label'
+
+interface CategorySelectProps {
+  value: string
+  onChange: (value: string) => void
+}
 
 const categories = [
   'Acessórios',
   'Anzol',
-  'Boné',
   'Bóia',
+  'Bolsa',
+  'Boné',
+  'Caixa',
   'Calça',
   'Calçado',
   'Camisa',
   'Camiseta',
   'Carretilha',
   'Chapéu',
+  'Estojo',
   'Garateia',
   'Isca artificial',
   'Luva',
+  'Mochila',
   'Molinete',
   'Outros',
   'Suporte',
   'Vara de pesca',
-]
-
-interface CategorySelectProps {
-  value: string
-  onChange: (value: string) => void
-}
+].sort() // Ordena as categorias em ordem alfabética
 
 export function CategorySelect({ value, onChange }: CategorySelectProps) {
   return (
