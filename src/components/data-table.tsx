@@ -1,7 +1,12 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { ChevronLeft, ChevronRight, ArrowUpDown } from 'lucide-react'
+import {
+  ChevronLeft,
+  ChevronRight,
+  ArrowUpDown,
+  MoreHorizontal,
+} from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -14,6 +19,15 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { api } from '@/services/api'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import Link from 'next/link'
 
 interface Product {
   id: string
@@ -122,6 +136,7 @@ export function DataTable() {
               <TableHead>Categoria</TableHead>
               <TableHead className="hidden lg:table-cell">Descrição</TableHead>
               <TableHead className="text-right">Preço</TableHead>
+              <TableHead className="w-[70px]"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -141,6 +156,36 @@ export function DataTable() {
                       style: 'currency',
                       currency: 'BRL',
                     }).format(Number(product.price))}
+                  </TableCell>
+                  <TableCell>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0">
+                          <span className="sr-only">Open menu</span>
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Opções</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>
+                          <Link
+                            href={`/dashboard/product-update/${product.id}`}
+                          >
+                            Editar
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Link href="/dashboard/product-details">
+                            Detalhes
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="text-destructive">
+                          Excluir
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </TableCell>
                 </TableRow>
               ))
@@ -168,6 +213,30 @@ export function DataTable() {
             <div key={product.id} className="rounded-lg border p-4">
               <div className="flex justify-between items-center mb-2">
                 <span className="font-medium">{product.brand}</span>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="h-8 w-8 p-0">
+                      <span className="sr-only">Open menu</span>
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Opções</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>
+                      <Link href={`/dashboard/product-update?id=${product.id}`}>
+                        Editar
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link href="/dashboard/product-details">Detalhes</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="text-destructive">
+                      Excluir
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
               <p className="text-sm font-bold mb-1">{product.name}</p>
               <p className="text-sm text-gray-600 mb-2 line-clamp-2">

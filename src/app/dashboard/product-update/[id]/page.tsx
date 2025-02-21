@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -13,16 +13,42 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { api } from '@/services/api'
 
 export default function ProductUpdate() {
   const router = useRouter()
+  const { id } = useParams()
+
   const [formData, setFormData] = useState({
-    barcode: '',
+    // barcode: '',
     brand: '',
     name: '',
     description: '',
     price: '',
   })
+
+  useEffect(() => {
+    if (id) {
+      fetchProductData(Array.isArray(id) ? id[0] : id)
+    }
+  }, [id])
+
+  const fetchProductData = async (id: string) => {
+    try {
+      const response = await api.get(`/products/${id}`)
+      const productData = response.data
+      setFormData({
+        // barcode: productData.barcode,
+        brand: productData.brand,
+        name: productData.name,
+        description: productData.description,
+        price: productData.price.toString(),
+      })
+    } catch (error) {
+      console.error('Error fetching product data:', error)
+      // Handle error (e.g., show error message to user)
+    }
+  }
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -34,18 +60,16 @@ export default function ProductUpdate() {
     }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Here you would typically send the data to your backend
-    console.log('Form submitted:', formData)
-    // Reset form after submission
-    setFormData({
-      barcode: '',
-      brand: '',
-      name: '',
-      description: '',
-      price: '',
-    })
+    try {
+      await api.put(`/products/${id}`, formData)
+      console.log('Product updated successfully')
+      router.push('/dashboard') // Redirect to dashboard after successful update
+    } catch (error) {
+      console.error('Error updating product:', error)
+      // Handle error (e.g., show error message to user)
+    }
   }
 
   return (
@@ -57,8 +81,9 @@ export default function ProductUpdate() {
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
+          <div>
+            {/* className="grid grid-cols-2 gap-4" */}
+            {/* <div className="space-y-2">
               <Label htmlFor="barcode">Código</Label>
               <Input
                 id="barcode"
@@ -67,7 +92,7 @@ export default function ProductUpdate() {
                 onChange={handleChange}
                 required
               />
-            </div>
+            </div> */}
             <div className="space-y-2">
               <Label htmlFor="brand">Marca</Label>
               <Input
@@ -96,7 +121,6 @@ export default function ProductUpdate() {
               name="description"
               value={formData.description}
               onChange={handleChange}
-              required
             />
           </div>
           <div className="space-y-2">
