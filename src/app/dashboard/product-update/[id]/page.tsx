@@ -13,19 +13,21 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { api } from '@/services/api'
+import { updateProductSchema } from '@/utils/productSchema'
 
 export default function ProductUpdate() {
   const router = useRouter()
   const { id } = useParams()
 
   const [formData, setFormData] = useState({
-    // barcode: '',
     brand: '',
     name: '',
     description: '',
     price: '',
   })
+  const [errors, setErrors] = useState<{ [key: string]: string }>({})
 
   useEffect(() => {
     if (id) {
@@ -38,15 +40,13 @@ export default function ProductUpdate() {
       const response = await api.get(`/products/${id}`)
       const productData = response.data
       setFormData({
-        // barcode: productData.barcode,
         brand: productData.brand,
         name: productData.name,
         description: productData.description,
-        price: productData.price.toString(),
+        price: productData.price,
       })
     } catch (error) {
-      console.error('Error fetching product data:', error)
-      // Handle error (e.g., show error message to user)
+      console.error('Erro ao buscar produto:', error)
     }
   }
 
@@ -62,13 +62,37 @@ export default function ProductUpdate() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setErrors({})
+
+    const parsed = updateProductSchema.safeParse(formData)
+    if (!parsed.success) {
+      const fieldErrors: Record<string, string> = {}
+      parsed.error.errors.forEach((err: any) => {
+        fieldErrors[err.path[0]] = err.message
+      })
+      setErrors(fieldErrors)
+      return
+    }
+
     try {
-      await api.put(`/products/${id}`, formData)
-      console.log('Product updated successfully')
-      router.push('/dashboard') // Redirect to dashboard after successful update
-    } catch (error) {
-      console.error('Error updating product:', error)
-      // Handle error (e.g., show error message to user)
+      await api.put(`/products/${id}`, parsed.data)
+      alert('Produto atualizado com sucesso!')
+      router.push('/dashboard')
+    } catch (error: any) {
+      if (error.response) {
+        const responseData = error.response.data
+        if (responseData.details && Array.isArray(responseData.details)) {
+          const formattedErrors: { [key: string]: string } = {}
+          responseData.details.forEach((err: any) => {
+            formattedErrors[err.field] = err.message
+          })
+          setErrors(formattedErrors)
+          return
+        }
+        alert(responseData.error || 'Erro inesperado')
+      } else {
+        alert(error.message || 'Ocorreu um erro desconhecido.')
+      }
     }
   }
 
@@ -81,28 +105,17 @@ export default function ProductUpdate() {
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
-          <div>
-            {/* className="grid grid-cols-2 gap-4" */}
-            {/* <div className="space-y-2">
-              <Label htmlFor="barcode">Código</Label>
-              <Input
-                id="barcode"
-                name="barcode"
-                value={formData.barcode}
-                onChange={handleChange}
-                required
-              />
-            </div> */}
-            <div className="space-y-2">
-              <Label htmlFor="brand">Marca</Label>
-              <Input
-                id="brand"
-                name="brand"
-                value={formData.brand}
-                onChange={handleChange}
-                required
-              />
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="brand">Marca</Label>
+            <Input
+              id="brand"
+              name="brand"
+              value={formData.brand}
+              onChange={handleChange}
+            />
+            {errors.brand && (
+              <p className="text-red-500 text-sm">{errors.brand}</p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="name">Nome do produto</Label>
@@ -111,8 +124,10 @@ export default function ProductUpdate() {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              required
             />
+            {errors.name && (
+              <p className="text-red-500 text-sm">{errors.name}</p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="description">Descrição</Label>
@@ -122,20 +137,22 @@ export default function ProductUpdate() {
               value={formData.description}
               onChange={handleChange}
             />
+            {errors.description && (
+              <p className="text-red-500 text-sm">{errors.description}</p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="price">Preço</Label>
             <Input
-              className="appearance-none [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden [-moz-appearance:textfield]"
               id="price"
               name="price"
-              type="number"
-              min="0"
-              step="0.01"
+              type="text"
               value={formData.price}
               onChange={handleChange}
-              required
             />
+            {errors.price && (
+              <p className="text-red-500 text-sm">{errors.price}</p>
+            )}
           </div>
         </CardContent>
         <CardFooter className="flex flex-col gap-2">

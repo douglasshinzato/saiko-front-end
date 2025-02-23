@@ -4,7 +4,7 @@ import type React from 'react'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { productSchema } from '@/utils/productSchema'
+import { createProductSchema } from '@/utils/productSchema'
 import { api } from '@/services/api'
 import { Button } from '@/components/ui/button'
 import {
@@ -55,7 +55,7 @@ export default function ProductRegistrationForm() {
     }
 
     // 🔹 Validar os dados com Zod antes de enviar
-    const parsed = productSchema.safeParse(formData)
+    const parsed = createProductSchema.safeParse(formData)
 
     if (!parsed.success) {
       const fieldErrors: Record<string, string> = {}

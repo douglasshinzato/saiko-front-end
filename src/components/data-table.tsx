@@ -34,7 +34,7 @@ interface Product {
   barcode: string
   name: string
   description: string
-  price: number
+  price: string
   brand: string
   category: string
 }
@@ -224,7 +224,7 @@ export function DataTable() {
                     <DropdownMenuLabel>Opções</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem>
-                      <Link href={`/dashboard/product-update?id=${product.id}`}>
+                      <Link href={`/dashboard/product-update/${product.id}`}>
                         Editar
                       </Link>
                     </DropdownMenuItem>

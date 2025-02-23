@@ -1,10 +1,17 @@
 import { z } from 'zod'
 
-export const productSchema = z.object({
+export const createProductSchema = z.object({
   // barcode: z.string().min(1, 'O código de barras é obrigatório'),
   brand: z.string(),
   name: z.string(),
   category: z.string(),
   description: z.string().optional(),
   price: z.string().nonempty('O preço é obrigatório'),
+})
+
+export const updateProductSchema = z.object({
+  brand: z.string().min(1, 'A marca é obrigatória'),
+  name: z.string().min(1, 'O nome do produto é obrigatório'),
+  description: z.string().optional(),
+  price: z.string().min(1, 'O preço é obrigatório'),
 })
