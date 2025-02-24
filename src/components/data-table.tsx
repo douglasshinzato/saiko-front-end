@@ -240,6 +240,9 @@ export function DataTable() {
               </div>
               <p className="text-sm font-bold mb-1">{product.name}</p>
               <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+                {product.category}
+              </p>
+              <p className="text-sm text-gray-600 mb-2 line-clamp-2">
                 {product.description}
               </p>
               <div className="flex justify-between items-center mt-2">
