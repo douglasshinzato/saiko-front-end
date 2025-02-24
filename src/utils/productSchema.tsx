@@ -9,9 +9,12 @@ export const createProductSchema = z.object({
   price: z.string().nonempty('O preço é obrigatório'),
 })
 
-export const updateProductSchema = z.object({
-  brand: z.string().min(1, 'A marca é obrigatória'),
-  name: z.string().min(1, 'O nome do produto é obrigatório'),
-  description: z.string().optional(),
-  price: z.string().min(1, 'O preço é obrigatório'),
-})
+export const updateProductSchema = z
+  .object({
+    brand: z.string().min(1, 'A marca é obrigatória'),
+    name: z.string().min(1, 'O nome do produto é obrigatório'),
+    category: z.string().min(1, 'A categoria é obrigatória').optional(),
+    description: z.string().optional(),
+    price: z.string().min(1, 'O preço é obrigatório'),
+  })
+  .strict()

@@ -13,9 +13,9 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 import { api } from '@/services/api'
 import { updateProductSchema } from '@/utils/productSchema'
+import { CategorySelect } from '@/components/category-select'
 
 export default function ProductUpdate() {
   const router = useRouter()
@@ -24,6 +24,7 @@ export default function ProductUpdate() {
   const [formData, setFormData] = useState({
     brand: '',
     name: '',
+    category: '',
     description: '',
     price: '',
   })
@@ -42,6 +43,7 @@ export default function ProductUpdate() {
       setFormData({
         brand: productData.brand,
         name: productData.name,
+        category: productData.category,
         description: productData.description,
         price: productData.price,
       })
@@ -60,9 +62,16 @@ export default function ProductUpdate() {
     }))
   }
 
+  const handleCategoryChange = (value: string) => {
+    console.log('Categoria selecionada:', value)
+    setFormData((prevData) => ({ ...prevData, category: value }))
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setErrors({})
+
+    console.log('Dados enviados para a API:', formData)
 
     const parsed = updateProductSchema.safeParse(formData)
     if (!parsed.success) {
@@ -129,6 +138,13 @@ export default function ProductUpdate() {
               <p className="text-red-500 text-sm">{errors.name}</p>
             )}
           </div>
+          <CategorySelect
+            value={formData.category}
+            onChange={handleCategoryChange}
+          />
+          {errors.category && (
+            <p className="text-red-500 text-sm">{errors.category}</p>
+          )}
           <div className="space-y-2">
             <Label htmlFor="description">Descrição</Label>
             <Textarea

@@ -18,7 +18,6 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { CategorySelect } from '@/components/category-select'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 
 export default function ProductRegistrationForm() {
   const router = useRouter()
@@ -32,8 +31,6 @@ export default function ProductRegistrationForm() {
   })
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
 
-  const [categoryError, setCategoryError] = useState(false)
-
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -43,16 +40,10 @@ export default function ProductRegistrationForm() {
 
   const handleCategoryChange = (value: string) => {
     setFormData((prevData) => ({ ...prevData, category: value }))
-    setCategoryError(false)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
-    if (!formData.category) {
-      setCategoryError(true)
-      return
-    }
 
     // 🔹 Validar os dados com Zod antes de enviar
     const parsed = createProductSchema.safeParse(formData)
@@ -163,12 +154,8 @@ export default function ProductRegistrationForm() {
             value={formData.category}
             onChange={handleCategoryChange}
           />
-          {categoryError && (
-            <Alert variant="destructive">
-              <AlertDescription>
-                Por favor, selecione uma categoria.
-              </AlertDescription>
-            </Alert>
+          {errors.category && (
+            <p className="text-red-500 text-sm">{errors.category}</p>
           )}
           <div className="space-y-2">
             <Label htmlFor="description">Descrição</Label>
